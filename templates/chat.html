@@ -7,24 +7,60 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Custom styles */
-        #chat_area div:nth-child(even) {
-            /* Change the shade of gray by adjusting the hexadecimal value */
-            color: white;
+        #chat_area {
             padding: 10px;
-            background-color: #2b2b2b; /* This is a mid-gray shade */
         }
-        
-        #chat_area div:nth-child(odd) {
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .user-bubble {
+            background-color: #1e90ff;
             color: white;
-            background-color: #141313; /* This color remains the same for odd divs */
+            align-self: flex-end;
         }
-        /* Dots animation */
+
+        .ai-bubble {
+            background-color: #333;
+            color: white;
+            align-self: flex-start;
+        }
+
+        .chat-bubble:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .user-bubble:before {
+            top: 0;
+            right: -10px;
+            border-width: 10px 10px 0 0;
+            border-color: #1e90ff transparent transparent transparent;
+        }
+
+        .ai-bubble:before {
+            top: 0;
+            left: -10px;
+            border-width: 10px 0 0 10px;
+            border-color: #333 transparent transparent transparent;
+        }
+
         .lds-ellipsis {
             display: inline-block;
             position: relative;
             width: 64px;
             height: 20px;
         }
+
         .lds-ellipsis div {
             position: absolute;
             top: 9px;
@@ -34,50 +70,107 @@
             background: #fff;
             animation-timing-function: cubic-bezier(0, 1, 1, 0);
         }
+
         .lds-ellipsis div:nth-child(1) {
             left: 6px;
             animation: lds-ellipsis1 0.6s infinite;
         }
+
         .lds-ellipsis div:nth-child(2) {
             left: 6px;
             animation: lds-ellipsis2 0.6s infinite;
         }
+
         .lds-ellipsis div:nth-child(3) {
             left: 26px;
             animation: lds-ellipsis2 0.6s infinite;
         }
+
         .lds-ellipsis div:nth-child(4) {
             left: 45px;
             animation: lds-ellipsis3 0.6s infinite;
         }
+
         @keyframes lds-ellipsis1 {
             0% {
                 transform: scale(0);
             }
+
             100% {
                 transform: scale(1);
             }
         }
+
         @keyframes lds-ellipsis3 {
             0% {
                 transform: scale(1);
             }
+
             100% {
                 transform: scale(0);
             }
         }
+
         @keyframes lds-ellipsis2 {
             0% {
                 transform: translate(0, 0);
             }
+
             100% {
                 transform: translate(19px, 0);
             }
         }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center content horizontally */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-image {
+            width: 200px; /* Adjust size if needed */
+            height: auto;
+            object-fit: cover;
+        }
+
+        .info-box {
+            border: 2px solid #2b2b2b;
+            border-radius: 8px;
+            padding: 16px;
+            background-color: #1f1f1f;
+            width: 45%; /* Ajustar ancho */
+            margin: 0 auto; /* Center the info-box within its container */
+        }
+
+        .info-box img {
+            margin-top: 16px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 5%; /* Ajustar distancia del margen */
+            gap: 2%; /* Reducir el espacio entre los contenedores */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto; /* Center the container horizontally */
+            padding-top: 10rem; /* Ensure enough top padding to center vertically */
+        }
+
+        .chat-title {
+            margin-top: 40px; /* Aumentar el espacio entre la sección de misión/visión y el título de chat */
+        }
     </style>
     <script>
         $(document).ready(function () {
-            $('#submit').click(function () {
+            function sendMessage() {
                 var user_input = $('#user_input').val();
                 $('#user_input').val('');
 
@@ -95,8 +188,8 @@
                         // Hide loading animation upon receiving response
                         $('#loading').addClass('hidden');
 
-                        $('#chat_area').append('<div class="text-left font-bold text-xl lg:text-xl p-2">You: ' + user_input + '</div>');
-                        $('#chat_area').append('<div class="text-left text-xl lg:text-xl bg-red-900 text-white-100 p-5">AI: ' + data.response + '</div>');
+                        $('#chat_area').append('<div class="chat-bubble user-bubble">You: ' + user_input + '</div>');
+                        $('#chat_area').append('<div class="chat-bubble ai-bubble">AI: ' + data.response + '</div>');
 
                         // Auto-scroll to the bottom of the chat area
                         $('#chat_area').scrollTop($('#chat_area')[0].scrollHeight);
@@ -105,37 +198,63 @@
                         console.error(error);
                     }
                 });
+            }
+
+            $('#submit').click(function () {
+                sendMessage();
+            });
+
+            $('#user_input').keypress(function (e) {
+                if (e.which == 13) { // Enter key pressed
+                    e.preventDefault(); // Prevent new line in input
+                    sendMessage();
+                }
             });
         });
     </script>
 </head>
 
 <body class="bg-gray-800 flex justify-center items-center h-screen">
-    <div class="container mx-auto px-4 md:px-8 py-8 bg-gray-900 rounded-md shadow-lg w-full max-w-screen-lg">
-        <h1 class="text-2xl lg:text-2xl font-bold text-center mb-8">
-            <span class="text-indigo-400">Welcome to </span>
-            <span class="text-blue-500">GanaderIA</span>
+    <div class="container bg-gray-900 rounded-md shadow-lg w-full">
+        <div class="header-container mb-8">
+            <img src="{{ url_for('static', filename='Ganaderia.png') }}" alt="Ganaderia Logo" class="header-image">
+            <h1 class="text-3xl lg:text-5xl font-bold text-center">
+                <span class="text-gray-400">Bienvenido a  </span>
+                <span class="text-blue-500">GanaderIA</span>
+            </h1>
+        </div>
+        <div class="info-container">
+            <div class="info-box">
+                <h2 class="text-xl lg:text-2xl font-bold text-white text-center">Misión</h2>
+                <p class="text-xs lg:text-base text-white mt-4 text-center">Nuestra misión es proporcionar a los empleados ganaderos las herramientas necesarias para administrar de manera eficiente y sostenible los procesos internos de su finca, mejorando así la productividad y bienestar del ganado.</p>
+                <img src="{{ url_for('static', filename='mision.png') }}" alt="Misión">
+            </div>
+            <div class="info-box">
+                <h2 class="text-xl lg:text-2xl font-bold text-white text-center">Visión</h2>
+                <p class="text-xs lg:text-base text-white mt-4 text-center">Nuestra visión es ser líderes en la gestión ganadera, promoviendo prácticas sostenibles y tecnológicamente avanzadas que beneficien tanto a los productores como al medio ambiente, garantizando la calidad y seguridad de los productos ganaderos.</p>
+                <img src="{{ url_for('static', filename='vision.png') }}" alt="Visión">
+            </div>
+        </div>
+  
+        <h1 class="text-4xl lg:text-5xl font-bold text-center mb-8 chat-title">
+            <span class="text-gray-400">Chatea con el Asistente</span>
+            <span class="text-blue-500">- GanaderIA</span>
         </h1>
-        <h1 class="text-4xl lg:text-5xl font-bold text-center mb-8">
-            <span class="text-indigo-400">Chat</span>
-            <span class="text-blue-500">with GanaderIA</span>
-        </h1>
-        
+
         <!-- Loading Animation -->
         <div id="loading" class="flex justify-center items-center mb-4 hidden">
             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
 
-        <div id="chat_area" class="overflow-y-auto max-h-96"> <!-- Added max height and vertical scroll -->
-            <!-- Chat history will be displayed here -->
+        <div id="chat_area" class="overflow-y-auto max-h-96 flex flex-col">
             {% for chat in chat_history %}
-            <div class="text-left font-bold text-lg lg:text-xl p-2">You: {{ chat.user }}</div>
-            <div class="text-left text-lg lg:text-xl bg-red-900 text-white-100 p-5">AI: {{ chat.bot }}</div>
+            <div class="chat-bubble {% if chat.sender == 'user' %}user-bubble{% else %}ai-bubble{% endif %}">You: {{ chat.user }}</div>
+            <div class="chat-bubble {% if chat.sender == 'user' %}user-bubble{% else %}ai-bubble{% endif %}">AI: {{ chat.bot }}</div>
             {% endfor %}
         </div>
         <div class="flex mt-4">
             <input type="text" id="user_input" class="flex-1 p-4 rounded-l-lg border-t mr-2 focus:outline-none focus:border-blue-500 text-lg lg:text-xl" placeholder="Type here...">
-            <button id="submit" class="p-4 rounded-r-lg bg-red-500 text-white text-lg lg:text-xl transition duration-300 ease-in-out transform hover:scale-105">Send</button>
+            <button id="submit" class="p-4 rounded-r-lg bg-blue-500 text-white text-lg lg:text-xl transition duration-300 ease-in-out transform hover:scale-105">Send</button>
         </div>
     </div>
 </body>
