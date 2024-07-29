@@ -1,1 +1,2 @@
-Gemini_API_KEY='AIzaSyDsla22ez1WVyQoMZ_iygruJ02Q58PtBmI'
+import os 
+Gemini_API_KEY=os.getenv('GEMINI_API_KEY')
