@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Este proyecto consiste en un chatbot diseñado para mejorar la eficiencia y comunicación interna de la empresa ProcessOptima. El chatbot proporciona información sobre procesos internos relacionados con ganadería y agricultura sostenible. El backend está desarrollado en Flask y se encarga de manejar las peticiones del frontend y comunicarse con la API de Google Generative AI para obtener respuestas.
+Este proyecto consiste en un chatbot diseñado para mejorar la eficiencia y comunicación interna de la empresa ProcessOptima. El chatbot proporciona información sobre procesos internos relacionados con ganadería sostenible. El backend está desarrollado en Flask y se encarga de manejar las peticiones del frontend y comunicarse con la API de Google Generative AI para obtener respuestas.
 
 ## Qué Hace el Proyecto
 
